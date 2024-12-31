@@ -10,8 +10,8 @@ def read_sudoku_from_csv(file_path):
     with open(file_path, newline='') as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
-            # Parse each row and convert to integers, use -1 for empty cells
-            input_array.append([int(val) if val else -1 for val in row])
+            # Parse each row and convert to integers, use 0 for empty cells
+            input_array.append([int(val) if val else 0 for val in row])
     return input_array
 
 # Read the Sudoku grid from the CSV file
@@ -25,7 +25,7 @@ all_constraints = []
 # Add existing numbers
 for i in range(9):
     for j in range(9):
-        if input_array[i][j] != -1:
+        if input_array[i][j] != 0:    
             all_constraints.append(BIJK[i][j][input_array[i][j] - 1])
 
 # Add row constraints
@@ -62,7 +62,7 @@ for i in range(9):
                 cell_constraint = ~And(BIJK[i][j][k1], BIJK[i][j][k2])
                 all_constraints.append(cell_constraint)
 
-# Add a constraint
+# Add a constraint (e.g., p AND q)
 solver.add(And(all_constraints))
 
 if solver.check() == sat:
